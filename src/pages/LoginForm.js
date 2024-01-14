@@ -6,7 +6,6 @@ import { createAuthenticatedRequest } from "../utils/createAuthenticatedRequest"
 
 const LoginForm = () => {
   const [credentials, setCredentials] = useState({ usuario: "", password: "" });
-  // const { login } = useUser();
   const navigate = useNavigate();
 
   const context = useContext(Contexts.userContext);
@@ -25,7 +24,6 @@ const LoginForm = () => {
     try {
       console.log("antes de login", credentials);
       await context.login(credentials); // Llamada a la función de inicio de sesión del contexto
-      // console.log("validacion", await context.login(credentials))
       console.log("despues de login", context.user);
 
       // Redirige a la página de inicio o dashboard después de iniciar sesión

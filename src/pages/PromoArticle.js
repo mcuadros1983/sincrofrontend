@@ -5,22 +5,18 @@ import { createAuthenticatedRequest } from "../utils/createAuthenticatedRequest"
 import Contexts from "../context/Contexts";
 
 export default function PromoArticle(props) {
-  // Extraer datos de las props
-  //   const { location } = props;
-  //   const { state } = location;
-  //   const { articulos } = state;
   const location = useLocation();
   const { articulos } = location.state;
 
   const [products, setProducts] = useState([]);
   const [productsList, setProductsList] = useState([]);
-
+  const apiUrl = process.env.REACT_APP_API_URL || 'http://localhost:4000';
   const context = useContext(Contexts.promoContext);
   const params = useParams();
 
   const loadProductsList = async (id) => {
     console.log("promociones", context)
-    const res = await fetch(`http://localhost:4000/articulos`, {
+    const res = await fetch(`${apiUrl}/articulos`, {
       credentials: "include",
     });
     const data = await res.json();

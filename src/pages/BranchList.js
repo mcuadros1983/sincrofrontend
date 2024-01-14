@@ -6,9 +6,10 @@ import { createAuthenticatedRequest } from "../utils/createAuthenticatedRequest"
 export default function BranchList() {
   const [branches, setBranches] = useState([]);
   const navigate = useNavigate();
+  const apiUrl = process.env.REACT_APP_API_URL || 'http://localhost:4000';
 
   const loadBranches = async () => {
-    const res = await fetch("http://localhost:4000/sucursales/", {
+    const res = await fetch(`${apiUrl}/sucursales`, {
       credentials: "include",
     });
     const data = await res.json();
@@ -16,26 +17,6 @@ export default function BranchList() {
     setBranches(sortedBranches);
     console.log("storagebranchlist", localStorage.token);
   };
-
-  // const handleDelete = async (id) => {
-  //   const confirmDelete = window.confirm(
-  //     "¿Estás seguro de que deseas eliminar esta sucursal?"
-  //   );
-  //   if (!confirmDelete) {
-  //     return;
-  //   }
-  //   try {
-  //     const res = await fetch(`http://localhost:4000/sucursales/${id}`, {
-  //       credentials: "include",
-  //       method: "DELETE",
-  //     });
-  //     console.log(res);
-  //     setBranches(branches.filter((branch) => branch.id !== id));
-  //     // loadProducts() ////este metodo funciona pero no es el mas optimo ya que vuelve a cargar todos los productos de la base de datos y no solo el que se elimino;
-  //   } catch (error) {
-  //     console.log(error);
-  //   }
-  // };
 
   useEffect(() => {
     loadBranches();
@@ -58,21 +39,6 @@ export default function BranchList() {
             <tr key={branch.id}>
               <td>{branch.id}</td>
               <td>{branch.nombre}</td>
-              {/* <td className="text-center">
-                <Button
-                  variant="danger"
-                  onClick={() => handleDelete(branch.id)}
-                  className="mx-2"
-                >
-                  Eliminar
-                </Button>
-                <Button
-                  color="inherit"
-                  onClick={() => navigate(`/branches/${branch.id}/edit`)}
-                >
-                  Editar
-                </Button>
-              </td> */}
             </tr>
           ))}
         </tbody>

@@ -5,6 +5,7 @@ import Contexts from "../context/Contexts";
 export default function PromoForm() {
   const context = useContext(Contexts.promoContext);
   const [loading, setLoading] = useState({});
+  const apiUrl = process.env.REACT_APP_API_URL || 'http://localhost:4000';
 
   const copyPromotions = async (sucursalId, promocionesData) => {
     const confirmCopy = window.confirm(
@@ -18,7 +19,7 @@ export default function PromoForm() {
     setLoading((prevLoading) => ({ ...prevLoading, [sucursalId]: true }));
 
     try {
-      const response = await fetch("http://localhost:4000/copiarpromociones", {
+      const response = await fetch(`${apiUrl}/copiarpromociones`, {
         method: "POST",
         credentials: "include",
         headers: {

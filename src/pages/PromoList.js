@@ -10,10 +10,13 @@ export default function PromoList() {
   // const [articulos, setArticulos] = useState([]);
   const navigate = useNavigate();
 
+  const apiUrl = process.env.REACT_APP_API_URL || 'http://localhost:4000';
+
   const context = useContext(Contexts.promoContext);
 
   const loadBranches = async () => {
-    const res = await fetch("http://localhost:4000/sucursales", {
+    console.log("api", apiUrl)
+    const res = await fetch(`${apiUrl}/sucursales`, {
       credentials: "include",
     });
     const data = await res.json();
@@ -24,7 +27,7 @@ export default function PromoList() {
 
 
   const loadPromos = async () => {
-    const res = await fetch("http://localhost:4000/promociones", {
+    const res = await fetch(`${apiUrl}/promociones`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",

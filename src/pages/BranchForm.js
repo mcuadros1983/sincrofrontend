@@ -11,6 +11,7 @@ export default function BranchForm() {
   const [loading, setLoading] = useState(false);
   const [editing, setEditing] = useState(false); //estado para saber si se esta editando o no
 
+  const apiUrl = process.env.REACT_APP_API_URL || 'http://localhost:4000'
   const handleChange = (e) => {
     const { name, value } = e.target;
     setBranch({
@@ -23,7 +24,7 @@ export default function BranchForm() {
   const params = useParams();
 
   const loadBranch = async (id) => {
-    const res = await fetch(`http://localhost:4000/sucursales/${id}`, {
+    const res = await fetch(`${apiUrl}/sucursales/${id}`, {
       credentials: "include",
     });
     const data = await res.json();
@@ -49,8 +50,8 @@ export default function BranchForm() {
 
     if (editing) {
       //si esta editando
-      await fetch(`http://localhost:4000/sucursales/${params.id}`, {
-        credentials:"include",
+      await fetch(`${apiUrl}/sucursales//${params.id}`, {
+        credentials: "include",
         method: "PUT",
         body: JSON.stringify(branch),
         headers: {
@@ -60,8 +61,8 @@ export default function BranchForm() {
       setEditing(false);
     } else {
       //si no esta editando
-      await fetch("http://localhost:4000/sucursales/", {
-        credentials:"include",
+      await fetch(`${apiUrl}/sucursales`, {
+        credentials: "include",
         method: "POST",
         body: JSON.stringify(branch),
         headers: {

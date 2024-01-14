@@ -15,6 +15,8 @@ const UserForm = () => {
   const [editing, setEditing] = useState(false);
   const [changePassword, setChangePassword] = useState(false);
 
+  const apiUrl = process.env.REACT_APP_API_URL || 'http://localhost:4000';
+  
   const navigate = useNavigate();
   const params = useParams();
 
@@ -62,7 +64,7 @@ const UserForm = () => {
   };
 
   const loadUser = async (id) => {
-    const res = await fetch(`http://localhost:4000/usuarios/${id}`, {
+    const res = await fetch(`${apiUrl}/usuarios/${id}`, {
       credentials: "include",
     });
     const data = await res.json();
@@ -73,7 +75,7 @@ const UserForm = () => {
   useEffect(() => {
     // Cargar la lista de roles al montar el componente
     const fetchRoles = async () => {
-      const res = await fetch("http://localhost:4000/roles", {
+      const res = await fetch(`${apiUrl}/roles`, {
         credentials: "include",
       });
       const data = await res.json();
@@ -99,7 +101,7 @@ const UserForm = () => {
     setLoading(true);
 
     if (editing) {
-      await fetch(`http://localhost:4000/usuarios/${params.id}`, {
+      await fetch(`${apiUrl}/usuarios/${params.id}`, {
         credentials: "include",
         method: "PUT",
         body: JSON.stringify(user),
@@ -110,7 +112,7 @@ const UserForm = () => {
       setEditing(false);
     } else {
       console.log("user front", user)
-      await fetch("http://localhost:4000/usuarios/", { 
+      await fetch(`${apiUrl}/usuarios`, { 
         credentials: "include",
         method: "POST",
         body: JSON.stringify(user),

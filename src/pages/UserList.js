@@ -5,9 +5,9 @@ import { useNavigate } from "react-router-dom";
 export default function BranchList() {
   const [users, setUsers] = useState([]);
   const navigate = useNavigate();
-
+  const apiUrl = process.env.REACT_APP_API_URL || "http://localhost:4000";
   const loadUsers = async () => {
-    const res = await fetch("http://localhost:4000/usuarios/", {
+    const res = await fetch(`${apiUrl}/usuarios`, {
       credentials: "include",
     });
     const data = await res.json();
@@ -24,7 +24,7 @@ export default function BranchList() {
       return;
     }
     try {
-      const res = await fetch(`http://localhost:4000/usuarios/${id}`, {
+      const res = await fetch(`${apiUrl}/usuarios/${id}`, {
         credentials: "include",
         method: "DELETE",
       });
