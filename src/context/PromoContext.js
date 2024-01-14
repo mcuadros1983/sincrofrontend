@@ -9,12 +9,17 @@ export default function PromoContext({ children }) {
 
   const loadSucursales = async () => {
     const res = await fetch(`${apiUrl}/sucursales`, {
-      credentials: "include",
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      credentials: "include", // Agrega esta línea para incluir las cookies en la solicitud
     });
+    // console.log(res)
     const data = await res.json();
-    setSucursales(data);
+    const sortedSucursales = data.sort((a, b) => a.id - b.id);
+    setSucursales(sortedSucursales);
   };
-
   const loadPromos = async () => {
     const res = await fetch(`${apiUrl}/promociones`, {
       method: "GET",
