@@ -1,25 +1,28 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useContext } from "react";
 import { Table, Container, Button } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import { createAuthenticatedRequest } from "../utils/createAuthenticatedRequest";
+import Contexts from "../context/Contexts";
 
 export default function BranchList() {
   const [branches, setBranches] = useState([]);
-  const navigate = useNavigate();
-  const apiUrl = process.env.REACT_APP_API_URL || 'http://localhost:4000';
+  // const navigate = useNavigate();
+  // const apiUrl = process.env.REACT_APP_API_URL || 'http://localhost:4000';
 
-  const loadBranches = async () => {
-    const res = await fetch(`${apiUrl}/sucursales`, {
-      credentials: "include",
-    });
-    const data = await res.json();
-    const sortedBranches = data.sort((a, b) => a.id - b.id);
-    setBranches(sortedBranches);
-    console.log("storagebranchlist", localStorage.token);
-  };
+  const context = useContext(Contexts.promoContext);
+
+  // const loadBranches = async () => {
+  //   const res = await fetch(`${apiUrl}/sucursales`, {
+  //     credentials: "include",
+  //   });
+  //   const data = await res.json();
+  //   const sortedBranches = data.sort((a, b) => a.id - b.id);
+  //   setBranches(sortedBranches);
+  //   console.log("storagebranchlist", localStorage.token);
+  // };
 
   useEffect(() => {
-    loadBranches();
+    setBranches(context.sucursales);
   }, []);
 
   return (
