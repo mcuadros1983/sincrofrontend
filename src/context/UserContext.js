@@ -4,10 +4,11 @@ import Contexts from "./Contexts";
 
 export default function UserContext({ children }) {
   const [user, setUser] = useState(null);
+  const apiUrl = process.env.REACT_APP_API_URL || 'http://localhost:4000'
 
   const login = async (credentials) => {
     try {
-      const response = await fetch("http://localhost:4000/login/", {
+      const response = await fetch(`${apiUrl}/login/`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -20,20 +21,8 @@ export default function UserContext({ children }) {
       if (response.ok) {
         const data = await response.json();
         console.log("data", data);
-        // Realiza una solicitud adicional para obtener el usuario por nombre
-        // const userResponse = await fetch(
-        //   `http://localhost:4000/usuarios/nombre/${data.user.usuario}`
-        // );
-        // const usuario = await userResponse.json();
-        // usuario.token = data.token
-        // console.log("userfound", user);
-        // Setea el usuario en el estado
         console.log("usuario", data.user);
         setUser(data.user);
-
-        // También puedes almacenar el token u otras cosas según tus necesidades
-        // localStorage.setItem("token", data.token);
-        // console.log("storage", localStorage)
       } else {
         const errorData = await response.json();
         throw new Error(errorData.error || "Credenciales inválidas");
@@ -42,16 +31,10 @@ export default function UserContext({ children }) {
       throw error; // Lanza el error para que sea capturado por el código que llama a login
     }
   };
-
-  // const logout = () => {
-  //   // Puedes realizar cualquier limpieza necesaria al cerrar sesión
-  //   setUser(null);
-  //   // localStorage.removeItem("token");
-  // };
-
+  
   const logout = async () => {
     try {
-      const response = await fetch("http://localhost:4000/logout", {
+      const response = await fetch(`${apiUrl}/logout/`, {
         method: "POST",
         credentials: "include", // Incluye las cookies en la solicitud
       });

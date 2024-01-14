@@ -5,9 +5,10 @@ import Contexts from "./Contexts";
 export default function PromoContext({ children }) {
   const [promos, setPromos] = useState(null);
   const [sucursales, setSucursales] = useState(null);
+  const apiUrl = process.env.REACT_APP_API_URL || 'http://localhost:4000'
 
   const loadSucursales = async () => {
-    const res = await fetch("http://localhost:4000/sucursales", {
+    const res = await fetch(`${apiUrl}/sucursales`, {
       credentials: "include",
     });
     const data = await res.json();
@@ -15,7 +16,7 @@ export default function PromoContext({ children }) {
   };
 
   const loadPromos = async () => {
-    const res = await fetch("http://localhost:4000/promociones", {
+    const res = await fetch(`${apiUrl}/promociones`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
