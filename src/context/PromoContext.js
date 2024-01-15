@@ -5,7 +5,33 @@ import Contexts from "./Contexts";
 export default function PromoContext({ children }) {
   const [promos, setPromos] = useState(null);
   const [sucursales, setSucursales] = useState(null);
-  const apiUrl = process.env.REACT_APP_API_URL || 'http://localhost:4000'
+  const [databaseConnected, setDatabaseConnected] = useState(false);
+  const apiUrl = process.env.REACT_APP_API_URL || "http://localhost:4000";
+
+  const syncDatabase = async () => {
+    try {
+      const response = await fetch(`${apiUrl}/sync-database`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error(
+          `Error al sincronizar la base de datos: ${response.status} ${response.statusText}`
+        );
+      }
+
+      // La sincronización fue exitosa, actualizamos el estado
+      setDatabaseConnected(true);
+      console.log("Sincronización exitosa");
+    } catch (error) {
+      // Error al sincronizar, actualizamos el estado
+      setDatabaseConnected(false);
+      console.error("Error al sincronizar la base de datos:", error.message);
+    }
+  };
 
   const loadSucursales = async () => {
     const res = await fetch(`${apiUrl}/sucursales`, {
@@ -37,12 +63,19 @@ export default function PromoContext({ children }) {
   useEffect(() => {
     loadPromos();
     loadSucursales();
+    syncDatabase();
     // loadCustomers();
   }, []);
 
   return (
     <Contexts.promoContext.Provider
-      value={{ promos, setPromos, sucursales, setSucursales }}
+      value={{
+        promos,
+        setPromos,
+        sucursales,
+        setSucursales,
+        databaseConnected,
+      }}
     >
       {children}
     </Contexts.promoContext.Provider>

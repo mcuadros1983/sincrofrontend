@@ -10,39 +10,62 @@ export default function PromoList() {
   // const [articulos, setArticulos] = useState([]);
   const navigate = useNavigate();
 
-  const apiUrl = process.env.REACT_APP_API_URL || 'http://localhost:4000';
+  const apiUrl = process.env.REACT_APP_API_URL || "http://localhost:4000";
 
   const context = useContext(Contexts.promoContext);
 
   const loadBranches = async () => {
-    console.log("api", apiUrl)
-    const res = await fetch(`${apiUrl}/sucursales`, {
-      credentials: "include",
-    });
-    const data = await res.json();
-    setBranches(data);
-    context.setSucursales(data)
-    console.log("context", context)
-  };
+    try {
+      console.log("api", apiUrl);
+      const res = await fetch(`${apiUrl}/sucursales`, {
+        credentials: "include",
+      });
 
+      if (!res.ok) {
+        // Si la respuesta no es exitosa, lanzamos un error
+        throw new Error(`Error de red: ${res.status} ${res.statusText}`);
+      }
+
+      const data = await res.json();
+      setBranches(data);
+      context.setSucursales(data);
+      console.log("context", context);
+    } catch (error) {
+      // En caso de error, mostramos una alerta
+      console.error("Error al obtener las sucursales:", error.message);
+      alert("Las sucursales no se han podido obtener");
+    }
+  };
 
   const loadPromos = async () => {
-    const res = await fetch(`${apiUrl}/promociones`, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      credentials: "include", // Agrega esta línea para incluir las cookies en la solicitud
-    });
-    // console.log(res)
-    const data = await res.json();
-    console.log("dataproductlist", data);
-    const sortedPromos = data.sort((a, b) => a.id - b.id);
-    setPromos(sortedPromos);
-    context.setPromos(sortedPromos)
-    console.log("sortedPromos", sortedPromos);
-  };
+    try {
+      const res = await fetch(`${apiUrl}/promociones`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: "include",
+      });
 
+      if (!res.ok) {
+        // Si la respuesta no es exitosa (por ejemplo, 404 Not Found), lanzamos un error
+        throw new Error(
+          `Error al obtener las promociones: ${res.status} ${res.statusText}`
+        );
+      }
+
+      const data = await res.json();
+      console.log("dataproductlist", data);
+      const sortedPromos = data.sort((a, b) => a.id - b.id);
+      setPromos(sortedPromos);
+      context.setPromos(sortedPromos);
+      console.log("sortedPromos", sortedPromos);
+    } catch (error) {
+      // En caso de error, mostramos una alerta
+      console.error("Error al obtener las promociones:", error.message);
+      alert("Las promociones no se han podido obtener");
+    }
+  };
 
   useEffect(() => {
     loadPromos();
@@ -52,15 +75,34 @@ export default function PromoList() {
 
   // funcion para buscar el nombre de la sucursal segun el product.branch_id
   const getBranchName = (branchId) => {
-    console.log("idsucursal", branchId)
-    const branch = branches.find((branch) => branch.id == branchId);
-    return branch ? branch.nombre : "";
+    try {
+      console.log("idsucursal", branchId);
+      const branch = branches.find((branch) => branch.id == branchId);
+      return branch ? branch.nombre : "";
+    } catch (error) {
+      // En caso de error, mostramos un mensaje en la consola y devolvemos una cadena vacía
+      console.error(
+        "Error al obtener el nombre de la sucursal:",
+        error.message
+      );
+      return "";
+    }
   };
 
   const handleRowDoubleClick = (promocionId, articulos) => {
-    console.log("datos", articulos)
-    // Redireccionar a la página deseada con el id y nombre del artículo
-    navigate(`/promotions/${promocionId}/products/`, { state: { articulos } });
+    try {
+      console.log("datos", articulos);
+      // Redireccionar a la página deseada con el id y nombre del artículo
+      navigate(`/promotions/${promocionId}/products/`, {
+        state: { articulos },
+      });
+    } catch (error) {
+      // En caso de error, mostramos un mensaje en la consola
+      console.error(
+        "Error al manejar el doble clic en la fila:",
+        error.message
+      );
+    }
   };
 
   return (
@@ -83,7 +125,9 @@ export default function PromoList() {
             <tr
               key={promo.promocion.id}
               style={{ cursor: "pointer" }}
-              onDoubleClick={() => handleRowDoubleClick(promo.promocion.id, promo.articulos)}
+              onDoubleClick={() =>
+                handleRowDoubleClick(promo.promocion.id, promo.articulos)
+              }
             >
               <td>{promo.promocion.id}</td>
               <td>{promo.promocion.nombre}</td>

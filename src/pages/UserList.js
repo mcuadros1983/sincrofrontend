@@ -6,14 +6,27 @@ export default function BranchList() {
   const [users, setUsers] = useState([]);
   const navigate = useNavigate();
   const apiUrl = process.env.REACT_APP_API_URL || "http://localhost:4000";
+
   const loadUsers = async () => {
-    const res = await fetch(`${apiUrl}/usuarios`, {
-      credentials: "include",
-    });
-    const data = await res.json();
-    const sortedUsers = data.sort((a, b) => a.id - b.id);
-    setUsers(sortedUsers);
-    console.log("storagebranchlist", localStorage.token);
+    try {
+      const res = await fetch(`${apiUrl}/usuarios`, {
+        credentials: "include",
+      });
+
+      if (!res.ok) {
+        // Si la respuesta no es exitosa, lanzamos un error
+        throw new Error(`Error de red: ${res.status} ${res.statusText}`);
+      }
+
+      const data = await res.json();
+      const sortedUsers = data.sort((a, b) => a.id - b.id);
+      setUsers(sortedUsers);
+      console.log("storagebranchlist", localStorage.token);
+    } catch (error) {
+      // En caso de error, mostramos una alerta y un mensaje en la consola
+      console.error("Error al cargar los usuarios:", error.message);
+      alert("No se pudieron cargar los usuarios");
+    }
   };
 
   const handleDelete = async (id) => {

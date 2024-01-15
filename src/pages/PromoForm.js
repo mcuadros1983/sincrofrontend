@@ -5,7 +5,7 @@ import Contexts from "../context/Contexts";
 export default function PromoForm() {
   const context = useContext(Contexts.promoContext);
   const [loading, setLoading] = useState({});
-  const apiUrl = process.env.REACT_APP_API_URL || 'http://localhost:4000';
+  const apiUrl = process.env.REACT_APP_API_URL || "http://localhost:4000";
 
   const copyPromotions = async (sucursalId, promocionesData) => {
     const confirmCopy = window.confirm(
@@ -37,15 +37,21 @@ export default function PromoForm() {
 
       window.alert("¡Promociones copiadas correctamente!");
     } catch (error) {
-      console.error("Error al copiar promociones:", error);
+      console.error("Error al copiar promociones:", error.message);
+      // Mostrar una alerta en caso de error al copiar promociones
+      alert("Error al copiar las promociones");
     } finally {
       setLoading((prevLoading) => ({ ...prevLoading, [sucursalId]: false }));
     }
   };
 
   useEffect(() => {
-    // Puedes realizar alguna lógica adicional al cargar la página si es necesario
-  }, []);
+    // Verificar si la conexión con la base de datos local es exitosa
+    if (!context.databaseConnected) {
+      // Si no es exitosa, mostrar una alerta y deshabilitar los botones
+      alert("Error al conectarse con la base de datos local");
+    }
+  }, [context.databaseConnected]);
 
   return (
     <Container className="mt-4">
@@ -65,7 +71,10 @@ export default function PromoForm() {
                 <Button
                   variant="primary"
                   onClick={() => copyPromotions(sucursal.id, context.promos)}
-                  disabled={Object.values(loading).some((status) => status)}
+                  disabled={
+                    !context.databaseConnected ||
+                    Object.values(loading).some((status) => status)
+                  }
                 >
                   {loading[sucursal.id] ? (
                     <Spinner
